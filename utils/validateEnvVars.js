@@ -8,7 +8,7 @@ const schema = {
       .insensitive()
       .required(),
 
-  PORT: Joi.number().integer().min(10).max(10000).required(),
+  PORT: Joi.number().integer().min(10).max(100000).required(),
 
   DB_USERNAME: Joi.string(),
   DB_PASSWORD: Joi.string(),

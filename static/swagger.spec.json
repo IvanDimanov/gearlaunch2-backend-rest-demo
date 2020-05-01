@@ -1,0 +1,881 @@
+{
+  "info": {
+    "title": "gearlaunch2-backend-rest-demo",
+    "version": "1.0.0",
+    "description": "GearLaunch v2 Rest Demo Backend"
+  },
+  "host": "localhost:8000",
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "basePath": "/",
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "securityDefinitions": {
+    "bearerAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "Standard Authorization header using the Bearer scheme. Example: \"Bearer {token}\""
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "swagger": "2.0",
+  "paths": {
+    "/api/accounts/v1/countries": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Find all Countries",
+        "description": "This API returns a list of all `Countries` based on common `select` request.\n",
+        "operationId": "findAllCountries",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "select",
+            "in": "query",
+            "type": "object",
+            "description": "The `select` query object is used to point what data the API need to return.\nAdding a property to the `select` object will return the corresponding data.\n\nFor example, if you'd like to get a list of all `Countries` with their continent, you can submit this `select`:\n```\n{\n  \"name\": \"\",\n  \"continent_name\": \"\"\n}\n```\n\nFiltration is also supported with the special key of `\"$where\" :{}`. The `$where` object supports all comparison operators\nfrom Sequelize ORM https://sequelize.org/master/manual/model-querying-basics.html#operators. Please note that operations are prefixed, e.g. instead of `Op.eq` => `$op`.\n\nFor example, if you'd like to get a list of all `Countries` within the continent of `Africa`, you can submit this `select`:\n```\n{\n  \"name\": \"\",\n  \"$where\": {\n    \"continent_name\": {\n      \"$eq\": \"Africa\"\n    }\n  }\n}\n```\n",
+            "default": {
+              "code": "",
+              "name": ""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of `Countries` that matched the request parameters.\n",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/DatabaseCountry"
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/responses/AppNotFound"
+          }
+        }
+      }
+    },
+    "/api/accounts/v1/merchants": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Find all Merchants",
+        "description": "This API returns a list of all `Merchants` based on common `select` request.\n",
+        "operationId": "findAllMerchants",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "select",
+            "in": "query",
+            "type": "object",
+            "description": "The `select` query object is used to point what data the API need to return.\nAdding a property to the `select` object will return the corresponding data.\n\nFor example, if you'd like to get a list of all `Merchants`, you can submit this `select`:\n```\n{\n  \"merchant_name\": \"\"\n}\n```\n\nFiltration is also supported with the special key of `\"$where\" :{}`. The `$where` object supports all comparison operators\nfrom Sequelize ORM https://sequelize.org/master/manual/model-querying-basics.html#operators. Please note that operations are prefixed, e.g. instead of `Op.eq` => `$op`.\n\nFor example, if you'd like to get a list of all `Merchants` within the continent of `Africa`, you can submit this `select`:\n```\n{\n  \"merchant_name\": \"\",\n  \"country\": {\n    \"name\": \"\",\n    \"continent_name\": \"\",\n    \"$where\": {\n      \"continent_name\": {\n        \"$eq\": \"Africa\"\n      }\n    }\n  }\n}\n```\n",
+            "default": {
+              "merchant_name": ""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of `Merchants` that matched the request parameters.\n",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/DatabaseMerchant"
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/responses/AppNotFound"
+          }
+        }
+      }
+    },
+    "/api/products/v1/order_items": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Find all OrderItems",
+        "description": "This API returns a list of all `OrderItems` based on common `select` request.\n",
+        "operationId": "findAllOrderItems",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "select",
+            "in": "query",
+            "type": "object",
+            "description": "The `select` query object is used to point what data the API need to return.\nAdding a property to the `select` object will return the corresponding data.\n\nFor example, if you'd like to get a list of all `OrderItems`, you can submit this `select`:\n```\n{\n  \"quantity\": \"\"\n}\n```\n\nFiltration is also supported with the special key of `\"$where\" :{}`. The `$where` object supports all comparison operators\nfrom Sequelize ORM https://sequelize.org/master/manual/model-querying-basics.html#operators. Please note that operations are prefixed, e.g. instead of `Op.eq` => `$op`.\n\nFor example, if you'd like to get a list of all `OrderItems` that are `in_progress` for all buyer `Users` in Africa, you can submit this `select`:\n```\n{\n  \"quantity\": \"\",\n  \"product\": {\n    \"name\": \"\"\n  },\n  \"order\": {\n    \"status\": \"\",\n    \"$where\": {\n      \"status\": {\n        \"$eq\": \"in_progress\"\n      }\n    },\n    \"user\": {\n      \"full_name\": \"\",\n      \"country\": {\n        \"name\": \"\",\n        \"continent_name\": \"\",\n        \"$where\": {\n          \"continent_name\": {\n            \"$eq\": \"Africa\"\n          }\n        }\n      }\n    }\n  }\n}\n```\n",
+            "default": {
+              "quantity": ""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of `OrderItems` that matched the request parameters.\n",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/DatabaseOrderItem"
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/responses/AppNotFound"
+          }
+        }
+      }
+    },
+    "/api/products/v1/orders": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Find all Orders",
+        "description": "This API returns a list of all `Orders` based on common `select` request.\n",
+        "operationId": "findAllOrders",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "select",
+            "in": "query",
+            "type": "object",
+            "description": "The `select` query object is used to point what data the API need to return.\nAdding a property to the `select` object will return the corresponding data.\n\nFor example, if you'd like to get a list of all `Orders`, you can submit this `select`:\n```\n{\n  \"status\": \"\"\n}\n```\n\nFiltration is also supported with the special key of `\"$where\" :{}`. The `$where` object supports all comparison operators\nfrom Sequelize ORM https://sequelize.org/master/manual/model-querying-basics.html#operators. Please note that operations are prefixed, e.g. instead of `Op.eq` => `$op`.\n\nFor example, if you'd like to get a list of all `Orders` with status `in_progress` that were bought by `Users` from Africa, you can submit this `select`:\n```\n{\n  \"status\": \"\",\n  \"$where\": {\n    \"status\": {\n      \"$eq\": \"in_progress\"\n    }\n  },\n  \"user\": {\n    \"full_name\": \"\",\n    \"country\": {\n      \"name\": \"\",\n      \"continent_name\": \"\",\n      \"$where\": {\n        \"continent_name\": {\n          \"$eq\": \"Africa\"\n        }\n      }\n    }\n  }\n}\n```\n",
+            "default": {
+              "status": ""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of `Orders` that matched the request parameters.\n",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/DatabaseOrder"
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/responses/AppNotFound"
+          }
+        }
+      }
+    },
+    "/api/products/v1/products": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Find all Products",
+        "description": "This API returns a list of all `Products` based on common `select` request.\n",
+        "operationId": "findAllProducts",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "select",
+            "in": "query",
+            "type": "object",
+            "description": "The `select` query object is used to point what data the API need to return.\nAdding a property to the `select` object will return the corresponding data.\n\nFor example, if you'd like to get a list of all `Products`, you can submit this `select`:\n```\n{\n  \"name\": \"\"\n}\n```\n\nFiltration is also supported with the special key of `\"$where\" :{}`. The `$where` object supports all comparison operators\nfrom Sequelize ORM https://sequelize.org/master/manual/model-querying-basics.html#operators. Please note that operations are prefixed, e.g. instead of `Op.eq` => `$op`.\n\nFor example, if you'd like to get a list of all `Products` with status `in_stock` that were created by `Merchants` from Africa, you can submit this `select`:\n```\n{\n  \"name\": \"\",\n  \"status\": \"\",\n  \"$where\": {\n    \"status\": {\n      \"$eq\": \"in_stock\"\n    }\n  },\n  \"merchant\": {\n    \"merchant_name\": \"\",\n    \"country\": {\n      \"name\": \"\",\n      \"continent_name\": \"\",\n      \"$where\": {\n        \"continent_name\": {\n          \"$eq\": \"Africa\"\n        }\n      }\n    }\n  }\n}\n```\n",
+            "default": {
+              "name": ""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of `Products` that matched the request parameters.\n",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/DatabaseProduct"
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/responses/AppNotFound"
+          }
+        }
+      }
+    },
+    "/api/accounts/v1/status/ping": {
+      "get": {
+        "tags": [
+          "Status"
+        ],
+        "summary": "Checks latency between the client and API server",
+        "description": "Common ping test to check if `Accounts BackEnd` is still alive.\n",
+        "operationId": "getServiceStatus",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "General info about the Server.",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "BackEnd Accounts",
+                "description": "A distinctive name of the current Accounts server."
+              },
+              "serverTime": {
+                "type": "string",
+                "example": "2019-09-24T17:43:21.142Z",
+                "description": "Server ISO time."
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/responses/AppNotFound"
+          }
+        }
+      }
+    },
+    "/api/accounts/v1/users": {
+      "post": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Create a User",
+        "description": "Take the incoming POST Body and try to create a `User` entity out of it.\nThis API will return the newly created `User` on success.\n",
+        "operationId": "createUser",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "description": "The payload data for the `User` we want to create.\n",
+            "schema": {
+              "type": "object",
+              "required": [
+                "full_name",
+                "country_code"
+              ],
+              "properties": {
+                "full_name": {
+                  "type": "string",
+                  "minimum": 2,
+                  "example": "John Smith"
+                },
+                "country_code": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "example": 21
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The newly created User",
+            "schema": {
+              "$ref": "#/definitions/DatabaseUser"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/InvalidRequest"
+          },
+          "404": {
+            "description": "Unable to find Country with the requested code.",
+            "schema": {
+              "$ref": "#/definitions/ResponseError"
+            },
+            "examples": {
+              "application/json": {
+                "errorId": "a34f4558-1b88-47cd-8d63-ae4eaf038bd7",
+                "errorCode": "COUNTRY_NOT_FOUND",
+                "errorMessage": "Unable to find country"
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/responses/AppNotFound"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Find all Users",
+        "description": "This API returns a list of all `Users` based on common `select` request.\n",
+        "operationId": "findAllUsers",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "select",
+            "in": "query",
+            "type": "object",
+            "description": "The `select` query object is used to point what data the API need to return.\nAdding a property to the `select` object will return the corresponding data.\n\nFor example, if you'd like to get a list of all `Users` with their full name, you can submit this `select`:\n```\n{\n  \"full_name\": \"\"\n}\n```\n\nFiltration is also supported with the special key of `\"$where\" :{}`. The `$where` object supports all comparison operators\nfrom Sequelize ORM https://sequelize.org/master/manual/model-querying-basics.html#operators. Please note that operations are prefixed, e.g. instead of `Op.eq` => `$op`.\n\nFor example, if you'd like to get a list of all `Users` within the continent of `Africa`, you can submit this `select`:\n```\n{\n  \"full_name\": \"\",\n  \"country\": {\n    \"name\": \"\",\n    \"continent_name\": \"\",\n    \"$where\": {\n      \"continent_name\": {\n        \"$eq\": \"Africa\"\n      }\n    }\n  }\n}\n```\n",
+            "default": {
+              "full_name": ""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of `Users` that matched the request parameters.\n",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/DatabaseUser"
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/responses/AppNotFound"
+          }
+        }
+      }
+    },
+    "/api/accounts/v1/users/{id}": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "summary": "Find one User",
+        "description": "This API returns a single one `User` based on common `select` request\nand the `id` URL param\n",
+        "operationId": "findOneUser",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/PathUniqueIdentifier"
+          },
+          {
+            "name": "select",
+            "in": "query",
+            "type": "object",
+            "description": "The `select` query object is used to point what data the API need to return.\nAdding a property to the `select` object will return the corresponding data.\n\nFor example, if you'd like to get the `User` full name, you can submit this `select`:\n```\n{\n  \"full_name\": \"\"\n}\n```\n\nFiltration is also supported with the special key of `\"$where\" :{}`. The `$where` object supports all comparison operators\nfrom Sequelize ORM https://sequelize.org/master/manual/model-querying-basics.html#operators. Please note that operations are prefixed, e.g. instead of `Op.eq` => `$op`.\n\nFor example, if you'd like to get a list of all `Products` a specific `User` bought around Christmas, you can submit this `select`:\n```\n{\n  \"full_name\": \"\",\n  \"orders\": {\n    \"created_at\": \"\",\n    \"$where\": {\n      \"created_at\": {\n        \"$and\": [\n          {\"$gt\": \"2019-12-10T00:00:00.000Z\"},\n          {\"$lt\": \"2019-12-27T00:00:00.000Z\"}\n        ]\n      }\n    },\n    \"order_items\": {\n      \"quantity\": \"\",\n      \"product\": {\n        \"name\": \"\"\n      }\n    }\n  }\n}\n```\n",
+            "default": {
+              "full_name": ""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Single one `Users` that matched the request parameters.\n",
+            "schema": {
+              "$ref": "#/definitions/DatabaseUser"
+            }
+          },
+          "404": {
+            "description": "Unable to find User with the requested params.",
+            "schema": {
+              "$ref": "#/definitions/ResponseError"
+            },
+            "examples": {
+              "application/json": {
+                "errorId": "a34f4558-1b88-47cd-8d63-ae4eaf038bd7",
+                "errorCode": "USER_NOT_FOUND",
+                "errorMessage": "Unable to find user"
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/responses/AppNotFound"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ResponseError": {
+      "type": "object",
+      "description": "Schema for `4XX` server error response body.\nResponse includes a UUIDv4, error code and message body.\n",
+      "properties": {
+        "errorId": {
+          "type": "string",
+          "format": "uuid",
+          "example": "a34f4558-1b88-47cd-8d63-ae4eaf038bd7"
+        },
+        "errorCode": {
+          "type": "string",
+          "example": "GENERIC_SERVER_ERROR"
+        },
+        "errorMessage": {
+          "type": "string",
+          "example": "Generic server error"
+        }
+      },
+      "required": [
+        "errorId",
+        "errorCode",
+        "errorMessage"
+      ]
+    },
+    "DatabaseCountry": {
+      "description": "List of all `countries` that can be related to other entities such as `users` and `merchants`.\n",
+      "allOf": [
+        {
+          "type": "object",
+          "required": [
+            "code",
+            "name",
+            "continent_name"
+          ],
+          "properties": {
+            "code": {
+              "type": "number",
+              "description": "Unique country ID",
+              "example": 34
+            },
+            "name": {
+              "type": "string",
+              "description": "country name",
+              "example": "Vanuatu"
+            },
+            "continent_name": {
+              "type": "string",
+              "description": "On which continent this country is located",
+              "example": "Africa"
+            }
+          }
+        }
+      ]
+    },
+    "DatabaseMerchant": {
+      "description": "`Merchants` are users who can sell `products`.\n",
+      "allOf": [
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "merchant_name",
+            "admin_id",
+            "country_code",
+            "created_at"
+          ],
+          "properties": {
+            "id": {
+              "type": "number",
+              "description": "Unique merchant ID",
+              "example": 34
+            },
+            "merchant_name": {
+              "type": "string",
+              "description": "How the user would like to be named as merchant",
+              "example": "Jamie Stone"
+            },
+            "admin_id": {
+              "type": "number",
+              "description": "Association to the `users` entity. Shows which user uses this merchant entity.",
+              "example": 13
+            },
+            "country_code": {
+              "type": "number",
+              "description": "Association to the country entity. Shows user country address.",
+              "example": 22
+            },
+            "created_at": {
+              "type": "string",
+              "format": "date-time",
+              "readOnly": true,
+              "description": "DateTime indicating when that merchant was created",
+              "example": "2020-04-30T00:00:00.000Z"
+            }
+          }
+        }
+      ]
+    },
+    "DatabaseOrderItem": {
+      "description": "`Order` items are the collection of all bought `products` in a specific `order`.\n",
+      "allOf": [
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "product_id",
+            "order_id",
+            "quantity"
+          ],
+          "properties": {
+            "id": {
+              "type": "number",
+              "description": "Unique order item ID",
+              "example": 34
+            },
+            "product_id": {
+              "type": "number",
+              "description": "Association to the `products` entity. Shows which product was bought.",
+              "example": 100
+            },
+            "order_id": {
+              "type": "number",
+              "description": "Association to the `orders` entity. Shows which order bought the related product.",
+              "example": 200
+            },
+            "quantity": {
+              "type": "number",
+              "description": "Shows how much of the product was bought.",
+              "example": 5
+            }
+          }
+        }
+      ]
+    },
+    "DatabaseOrder": {
+      "description": "`Orders` are collection of bought `order items`.\n",
+      "allOf": [
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "user_id",
+            "status",
+            "created_at"
+          ],
+          "properties": {
+            "id": {
+              "type": "number",
+              "description": "Unique order ID",
+              "example": 34
+            },
+            "user_id": {
+              "type": "number",
+              "description": "Association to the `users` entity. Shows which user bought this product.",
+              "example": 14
+            },
+            "status": {
+              "type": "string",
+              "description": "A free text field to indicate if the order is paid.",
+              "example": "in_progress"
+            },
+            "created_at": {
+              "type": "string",
+              "format": "date-time",
+              "readOnly": true,
+              "description": "DateTime indicating when that order was created",
+              "example": "2020-04-30T00:00:00.000Z"
+            }
+          }
+        }
+      ]
+    },
+    "DatabaseProduct": {
+      "description": "`Products` are entities that `merchants` preset as ready to be sold.\n",
+      "allOf": [
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "name",
+            "merchant_id",
+            "price",
+            "status",
+            "created_at"
+          ],
+          "properties": {
+            "id": {
+              "type": "number",
+              "description": "Unique merchant ID",
+              "example": 34
+            },
+            "name": {
+              "type": "string",
+              "description": "Product UI representation",
+              "example": "Jeans"
+            },
+            "merchant_id": {
+              "type": "number",
+              "description": "Association to the `merchants` entity. Shows which merchants sells this product.",
+              "example": 14
+            },
+            "price": {
+              "type": "number",
+              "description": "How much does this product costs in USD",
+              "example": 100.25
+            },
+            "status": {
+              "type": "string",
+              "description": "Indicates if this product is available for selling. Possible values are out_of_stock, in_stock, running_low. Default value is out_of_stock.",
+              "example": "in_stock",
+              "default": "out_of_stock"
+            },
+            "created_at": {
+              "type": "string",
+              "format": "date-time",
+              "readOnly": true,
+              "description": "DateTime indicating when that product was created",
+              "example": "2020-04-30T00:00:00.000Z"
+            }
+          }
+        }
+      ]
+    },
+    "DatabaseUser": {
+      "description": "`Users` are the administrators that oversee trade. `Users` can also sell `products`\nif they have a relation to a `merchant` entity.\n",
+      "allOf": [
+        {
+          "type": "object",
+          "required": [
+            "id",
+            "full_name",
+            "country_code",
+            "created_at"
+          ],
+          "properties": {
+            "id": {
+              "type": "number",
+              "description": "Unique user ID",
+              "example": 34
+            },
+            "full_name": {
+              "type": "string",
+              "description": "User names",
+              "example": "John Smith"
+            },
+            "country_code": {
+              "type": "number",
+              "description": "Association to the country entity. Shows user country address.",
+              "example": 22
+            },
+            "created_at": {
+              "type": "string",
+              "format": "date-time",
+              "readOnly": true,
+              "description": "DateTime indicating when that user was created",
+              "example": "2020-04-30T00:00:00.000Z"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "responses": {
+    "InvalidRequest": {
+      "description": "Invalid parameters sent to the server.\n",
+      "schema": {
+        "$ref": "#/definitions/ResponseError"
+      },
+      "examples": {
+        "application/json": {
+          "errorId": "a34f4558-1b88-47cd-8d63-ae4eaf038bd7",
+          "errorCode": "REQUEST_VALIDATION_ERROR",
+          "errorMessage": "Missing request \"${type}\""
+        }
+      }
+    },
+    "AppNotFound": {
+      "description": "Some unexpected issue occurred and crashed the app.\n",
+      "schema": {
+        "$ref": "#/definitions/ResponseError"
+      },
+      "examples": {
+        "application/json": {
+          "errorId": "a34f4558-1b88-47cd-8d63-ae4eaf038bd7",
+          "errorCode": "INTERNAL_SERVER_ERROR",
+          "errorMessage": "Internal server error"
+        }
+      }
+    }
+  },
+  "parameters": {
+    "PaginationLimit": {
+      "in": "query",
+      "name": "pageSize",
+      "type": "integer",
+      "minimum": 2,
+      "maximum": 100,
+      "default": 10,
+      "description": "The `number` of items to retrieve in a listing.\n"
+    },
+    "PaginationOffset": {
+      "in": "query",
+      "name": "pageNumber",
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "The `page` of items to retrieve in a listing.\n"
+    },
+    "SortingKey": {
+      "in": "query",
+      "name": "sortKey",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "uniqueItems": true,
+      "default": [
+        "created_at"
+      ],
+      "description": "An array of table fields to sort a listing by.\nPossible values limited to Model fields.\n"
+    },
+    "SortingDirection": {
+      "in": "query",
+      "name": "sortOrder",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "default": [
+        "asc"
+      ],
+      "description": "An array of table fields to sort a listing by.\nPossible values limited to `asc` and `desc`.\n"
+    },
+    "PathUniqueIdentifier": {
+      "in": "path",
+      "name": "id",
+      "type": "number",
+      "format": "integer",
+      "required": true,
+      "description": "The `id` property of the entity we want to retrieve.\n"
+    },
+    "QueryUniqueIdentifierV4": {
+      "in": "query",
+      "name": "id",
+      "type": "string",
+      "format": "uuid",
+      "required": true,
+      "description": "The string literal `UUIDv4` of the Entity we want to retrieve.\n"
+    },
+    "withProductCategoriesAssociation": {
+      "in": "query",
+      "name": "withProductCategories",
+      "type": "boolean",
+      "default": true,
+      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach a `ProductCategories` association to the query.\n"
+    },
+    "withProductClassAssociation": {
+      "in": "query",
+      "name": "withProductClass",
+      "type": "boolean",
+      "default": false,
+      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach a `ProductClasses` association to the query.\n"
+    },
+    "withProductTypeAssociation": {
+      "in": "query",
+      "name": "withProductType",
+      "type": "boolean",
+      "default": false,
+      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the `ProductType` association to the query.\n"
+    },
+    "withContainerAssociation": {
+      "in": "query",
+      "name": "withContainer",
+      "type": "boolean",
+      "default": false,
+      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the `Container` association to the query.\n"
+    },
+    "withCurrentAddressAssociation": {
+      "in": "query",
+      "name": "withCurrentAddress",
+      "type": "boolean",
+      "default": false,
+      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the current `Address` association to the query.\n"
+    },
+    "withOriginAddressAssociation": {
+      "in": "query",
+      "name": "withOriginAddress",
+      "type": "boolean",
+      "default": false,
+      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the origin `Address` association to the query.\n"
+    },
+    "withUserAssociation": {
+      "in": "query",
+      "name": "withUser",
+      "type": "boolean",
+      "default": false,
+      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the owner `User` association to the query.\n"
+    },
+    "withSaleListingAssociation": {
+      "in": "query",
+      "name": "withSaleListing",
+      "type": "boolean",
+      "default": false,
+      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the owner `SaleListing` association to the query.\n"
+    },
+    "withSaleListingIngredientsAssociation": {
+      "in": "query",
+      "name": "withSaleListingIngredients",
+      "type": "boolean",
+      "default": false,
+      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the `Ingredients` association to the `SaleListing` object in query.\n"
+    },
+    "withSaleListingProductTypeAssociation": {
+      "in": "query",
+      "name": "withSaleListingProductType",
+      "type": "boolean",
+      "default": false,
+      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the `ProductType` association to the `SaleListing` object in query.\n"
+    },
+    "withSaleListingContainerAssociation": {
+      "in": "query",
+      "name": "withSaleListingContainer",
+      "type": "boolean",
+      "default": false,
+      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the `Container` association to the `SaleListing` object in query.\n"
+    },
+    "withSaleListingOriginAddressAssociation": {
+      "in": "query",
+      "name": "withSaleListingOriginAddress",
+      "type": "boolean",
+      "default": false,
+      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the origin `Address` association to the `SaleListing` object in query.\n"
+    },
+    "withSaleListingCurrentAddressAssociation": {
+      "in": "query",
+      "name": "withSaleListingCurrentAddress",
+      "type": "boolean",
+      "default": false,
+      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the current `Address` association to the `SaleListing` object in query.\n"
+    },
+    "withSampleAssociation": {
+      "in": "query",
+      "name": "withSample",
+      "type": "boolean",
+      "default": false,
+      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the `Sample` association to the `Bid` object.\n"
+    },
+    "withBidsAssociation": {
+      "in": "query",
+      "name": "withBids",
+      "type": "boolean",
+      "default": false,
+      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the existing `Bids` a `SaleListing` has.\n"
+    },
+    "withInvoicesAssociation": {
+      "in": "query",
+      "name": "withInvoices",
+      "type": "boolean",
+      "default": false,
+      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the existing `SaleListingInvoice` a `SaleListing` has.\n"
+    }
+  },
+  "tags": []
+}

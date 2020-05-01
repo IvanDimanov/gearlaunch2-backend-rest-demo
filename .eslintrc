@@ -1,0 +1,52 @@
+{
+  "plugins": [
+    "jsdoc"
+  ],
+
+  "extends": [
+    "eslint:recommended",
+    "google",
+    "plugin:jsdoc/recommended"
+  ],
+
+  "parser": "babel-eslint",
+
+  "env": {
+    "node": true,
+    "browser": true,
+    "mocha": true
+  },
+
+  "globals": {
+    "Promise": true,
+    "expect": true,
+    "should": true
+  },
+
+  "rules": {
+    "no-invalid-this": 0,
+    "max-len": [2, 130, 2, {
+      "ignoreUrls": true,
+      "ignoreComments": false,
+      "comments": 300
+    }],
+    "require-atomic-updates": 0,
+    "new-cap": [2, {
+      "capIsNewExceptionPattern": "^(DataTypes|Sequelize)\\.."
+    }],
+    "valid-jsdoc": 0,
+    "jsdoc/check-tag-names": [2, {
+      "definedTags": [
+        "swagger"
+      ]
+    }]
+  },
+
+  "settings": {
+    "jsdoc": {
+      "tagNamePreference": {
+        "augments": "extends"
+      }
+    }
+  }
+}

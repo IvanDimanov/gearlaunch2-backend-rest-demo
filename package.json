@@ -1,0 +1,83 @@
+{
+  "name": "gearlaunch2-backend-rest-demo",
+  "version": "1.0.0",
+  "description": "GearLaunch v2 Rest Demo Backend",
+  "license": "unlicensed",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git@lab.xogito.net:gearlaunch/gearlaunch2-backend-rest-demo.git"
+  },
+  "engines": {
+    "node": ">=12.13.0",
+    "npm": ">=6.12.0"
+  },
+  "scripts": {
+    "dev:clean": "node scripts/clean.js",
+    "dev:env": "node scripts/env.js",
+    "dev:refresh": "npm run dev:clean && npm ci && npm run dev:env",
+    "start": "pm2 start ./src -i 1 --watch",
+    "start:production": "pm2 start ./src -i 0 --no-daemon",
+    "test:basic": "NODE_ENV=test mocha --timeout=3000",
+    "test:debug": "npm run test:basic -- --inspect-brk",
+    "test:report": "nyc npm run test:basic",
+    "test:mochawesome": "npm run test:basic -- --reporter mochawesome --reporter-options reportDir='./dist/test-results/',reportFilename='index',reportPageTitle='gearlaunch-test-test mocha test results',inline=true,cdn=true,charts=true",
+    "test": "npm run test:basic -- --reporter mochawesome --reporter-options reportDir='./dist/test-results/',reportFilename='index',reportPageTitle='gearlaunch-test-test mocha test results',inline=true,cdn=true,charts=true,autoOpen=true",
+    "jsdoc:swagger": "swagger-jsdoc --definition ./swaggerDef.js --output ./static/swagger.spec.json",
+    "jsdoc:code": "jsdoc --configure jsdoc.json",
+    "jsdoc": "npm run jsdoc:swagger && npm run jsdoc:code",
+    "swagger:ui": "node scripts/swagger.js",
+    "swagger:serve": "npm run jsdoc:swagger && npm run swagger:ui && http-server ./dist/api",
+    "lint": "eslint ./src ./scripts ./utils ./database --fix",
+    "docs:readme": "node scripts/docs.js && node scripts/static.js",
+    "docs:build": "npm run jsdoc && npm run swagger:ui && npm run docs:readme",
+    "docs:serve": "npm run docs && http-server ./dist",
+    "docs": "npm run test:mochawesome && npm run test:report && npm run docs:build",
+    "build": "npm run dev:clean && npm run dev:env && npm run lint && npm run docs",
+    "bootstrap": "npm run dev:env && npm run jsdoc:swagger"
+  },
+  "dependencies": {
+    "@hapi/joi": "17.1.1",
+    "@koa/cors": "3.0.0",
+    "dotenv": "8.2.0",
+    "dotenv-expand": "5.1.0",
+    "koa": "2.11.0",
+    "koa-body": "4.1.1",
+    "koa-helmet": "5.2.0",
+    "koa-logger": "3.2.1",
+    "koa-router": "8.0.8",
+    "pg": "8.0.3",
+    "pg-hstore": "2.3.3",
+    "pm2": "4.4.0",
+    "sequelize": "5.21.7",
+    "sequelize-cli": "5.5.1",
+    "uuid": "8.0.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "10.1.0",
+    "chai": "4.2.0",
+    "chai-string": "1.5.0",
+    "docdash": "1.2.0",
+    "eslint": "6.8.0",
+    "eslint-config-google": "0.14.0",
+    "eslint-plugin-jsdoc": "24.0.0",
+    "fs-extra": "9.0.0",
+    "http-server": "0.12.3",
+    "husky": "4.2.5",
+    "jsdoc": "3.6.4",
+    "mocha": "7.1.2",
+    "mochawesome": "6.1.1",
+    "nyc": "15.0.1",
+    "read-package-json": "2.1.1",
+    "sequelize-test-helpers": "1.2.2",
+    "sinon": "9.0.2",
+    "sinon-chai": "3.5.0",
+    "swagger-jsdoc": "4.0.0",
+    "swagger-ui-dist": "3.25.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm run lint"
+    }
+  }
+}

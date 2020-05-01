@@ -1,0 +1,65 @@
+const getFindOptions = require('../getFindOptions');
+
+describe('/query/getFindOptions', () => {
+  it('should return empty options when called with empty object', () => {
+    expect(
+        getFindOptions({
+          Op: {},
+          getModelByName: () => '',
+        })
+    ).to.deep.equal({});
+  });
+
+
+  it('should return simple find options when called with simple object', () => {
+    expect(
+        getFindOptions({
+          select: {
+            id: '',
+            name: '',
+          },
+          Op: {},
+          getModelByName: () => '',
+        })
+    ).to.deep.equal({
+      attributes: ['id', 'name'],
+    });
+  });
+
+
+  it('should return complex find options when called with complex object', () => {
+    expect(
+        getFindOptions({
+          select: {
+            id: '',
+            name: '',
+            test: {
+              'code': '',
+              '$where': {
+                test: {
+                  '$eq': 11,
+                },
+              },
+            },
+          },
+          Op: {
+            'eq': '===',
+          },
+          getModelByName: () => 'testModel',
+        })
+    ).to.deep.equal({
+      attributes: ['id', 'name'],
+      include: [{
+        model: 'testModel',
+        as: 'test',
+        attributes: ['code'],
+        required: 1,
+        where: {
+          test: {
+            '===': 11,
+          },
+        },
+      }],
+    });
+  });
+});

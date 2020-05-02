@@ -38,7 +38,7 @@ const getFindOptions = require('../../../utils/query/getFindOptions');
  *           ```
  *
  *           Filtration is also supported with the special key of `"$where" :{}`. The `$where` object supports all comparison operators
- *           from Sequelize ORM https://sequelize.org/master/manual/model-querying-basics.html#operators. Please note that operations are prefixed, e.g. instead of `Op.eq` => `$op`.
+ *           from Sequelize ORM https://sequelize.org/master/manual/model-querying-basics.html#operators. Please note that operations are prefixed, e.g. instead of `Op.eq` => `$eq`.
  *
  *           For example, if you'd like to get a list of all `Users` within the continent of `Africa`, you can submit this `select`:
  *           ```

@@ -31,7 +31,7 @@ describe(apiPath, () => {
       created_at: '2020-01-01T00:00:00.000Z',
     };
 
-    const usersFindOne = sinon.stub().returns(Promise.resolve(getDateWrap(user)));
+    const usersFindAll = sinon.stub().returns(Promise.resolve([getDateWrap(user)]));
 
 
     ctx = {
@@ -60,7 +60,7 @@ describe(apiPath, () => {
             Op: {},
           },
           users: {
-            findOne: usersFindOne,
+            findAll: usersFindAll,
           },
         },
       },
@@ -70,7 +70,7 @@ describe(apiPath, () => {
 
   context('invalid requests', () => {
     it('should throw 404 with USER_NOT_FOUND `country_code` prop is not in the DB', async () => {
-      ctx.database.models.users.findOne = sinon.stub().returns(Promise.resolve());
+      ctx.database.models.users.findAll = sinon.stub().returns(Promise.resolve([]));
 
       let thrownError;
 

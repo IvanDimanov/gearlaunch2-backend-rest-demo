@@ -68,6 +68,29 @@ const getFindOptions = require('../../../utils/query/getFindOptions');
  *           }
  *           ```
  *
+ *           Similarly, you can use the `"$order":[]` object to set a specific order of your results. The `$order` object is an array of rules that will be applied starting from the first rule in the array down to the last one.
+ *
+ *           For example, if you'd like to get what was the most expensive `Order` a specific `User` paid for, you can submit this `select`:
+ *           ```
+ *           {
+ *             "full_name": "",
+ *             "orders": {
+ *               "id": "",
+ *               "order_items": {
+ *                 "quantity": "",
+ *                 "product": {
+ *                   "name": "",
+ *                   "price": ""
+ *                 }
+ *               }
+ *             },
+ *             "$order": [
+ *               ["orders.order_items.quantity", "desc"],
+ *               ["orders.order_items.product.price", "desc"]
+ *             ]
+ *           }
+ *           ```
+ *
  *         default:
  *           full_name: ''
  *     responses:
@@ -111,7 +134,8 @@ router.get('/api/accounts/v1/users/:id',
       };
 
       const findOptions = getFindOptions({select, Op, getModelByName});
-      const user = await models.users.findOne(findOptions);
+      const users = await models.users.findAll(findOptions);
+      const user = users[0];
 
       if (!user) {
         throw new HttpError(

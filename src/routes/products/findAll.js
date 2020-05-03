@@ -65,6 +65,26 @@ const getFindOptions = require('../../../utils/query/getFindOptions');
  *           }
  *           ```
  *
+ *           Similarly, you can use the `"$order":[]` object to set a specific order of your results. The `$order` object is an array of rules that will be applied starting from the first rule in the array down to the last one.
+ *
+ *           For example, if you'd like to get a list of all highest price `Products` sorted by their `Merchant` country name, you can submit this `select`:
+ *           ```
+ *           {
+ *             "name": "",
+ *             "price": "",
+ *             "merchant": {
+ *               "merchant_name": "",
+ *               "country": {
+ *                 "name": ""
+ *               }
+ *             },
+ *             "$order": [
+ *               ["price", "desc"],
+ *               ["merchant.country.name", "asc"]
+ *             ]
+ *           }
+ *           ```
+ *
  *         default:
  *           name: ''
  *     responses:

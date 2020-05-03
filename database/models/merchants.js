@@ -90,7 +90,7 @@ module.exports = (sequelize, DataTypes) => {
   });
 
 
-  merchants.associate = ({countries, users}) => {
+  merchants.associate = ({countries, users, products}) => {
     merchants.belongsTo(countries, {
       as: 'country',
       foreignKey: 'country_code',
@@ -99,6 +99,11 @@ module.exports = (sequelize, DataTypes) => {
     merchants.belongsTo(users, {
       as: 'user',
       foreignKey: 'admin_id',
+    });
+
+    merchants.hasMany(products, {
+      as: 'products',
+      foreignKey: 'merchant_id',
     });
   };
 

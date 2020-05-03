@@ -102,10 +102,15 @@ module.exports = (sequelize, DataTypes) => {
   });
 
 
-  products.associate = ({merchants}) => {
+  products.associate = ({merchants, order_items: orderItems}) => {
     products.belongsTo(merchants, {
       as: 'merchant',
       foreignKey: 'merchant_id',
+    });
+
+    products.hasMany(orderItems, {
+      as: 'order_items',
+      foreignKey: 'product_id',
     });
   };
 

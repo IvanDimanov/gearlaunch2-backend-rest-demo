@@ -18,6 +18,7 @@ const getInclude = (select, getFindOptions, Op, getModelByName) => {
         return {
           model: getModelByName(modelName),
           as: modelName,
+          required: true,
           ...options,
         };
       });

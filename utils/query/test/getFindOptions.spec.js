@@ -27,7 +27,7 @@ describe('/query/getFindOptions', () => {
   });
 
 
-  it('should return complex find options when called with complex object', () => {
+  it('should return complex find options when called with complex "$where" object', () => {
     expect(
         getFindOptions({
           select: {
@@ -60,6 +60,46 @@ describe('/query/getFindOptions', () => {
           },
         },
       }],
+    });
+  });
+
+
+  it('should return complex find options when called with complex "$order" object', () => {
+    expect(
+        getFindOptions({
+          select: {
+            'id': '',
+            'name': '',
+            'test': {
+              'code': '',
+            },
+            '$order': [
+              ['name', 'asc'],
+              ['test.code', 'desc'],
+            ],
+          },
+          Op: {},
+          getModelByName: () => 'testModel',
+        })
+    ).to.deep.equal({
+      attributes: ['id', 'name'],
+      include: [{
+        model: 'testModel',
+        as: 'test',
+        required: true,
+        attributes: ['code'],
+      }],
+      order: [
+        ['name', 'asc'],
+        [
+          {
+            model: 'testModel',
+            as: 'test',
+          },
+          'code',
+          'desc',
+        ],
+      ],
     });
   });
 });

@@ -1,6 +1,7 @@
 const getAttributes = require('./getAttributes');
 const getInclude = require('./getInclude');
 const getWhere = require('./getWhere');
+const getOrder = require('./getOrder');
 
 
 const getFindOptions = ({select = {}, pagination = {}, Op, getModelByName}) => {
@@ -22,6 +23,11 @@ const getFindOptions = ({select = {}, pagination = {}, Op, getModelByName}) => {
   if (where) {
     options.where = where;
     options.required = 1;
+  }
+
+  const order = getOrder(select['$order'], getModelByName);
+  if (order) {
+    options.order = order;
   }
 
   return options;

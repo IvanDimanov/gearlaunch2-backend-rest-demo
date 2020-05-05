@@ -6,9 +6,9 @@ module.exports = (sequelize, DataTypes) => {
    * @type {external:Model}
    * @extends {external:Model}
    * @memberof db
-   * @property {number} id - Unique merchant ID
+   * @property {string} id - Unique merchant ID
    * @property {string} merchant_name - How the user would like to be named as merchant
-   * @property {number} admin_id - Association to the `users` entity. Shows which user uses this merchant entity.
+   * @property {string} admin_id - Association to the `users` entity. Shows which user uses this merchant entity.
    * @property {number} country_code - Association to the `country` entity. Shows user country address.
    * @property {string} created_at - DateTime indicating when that merchant was created
    * @see {@link https://sequelize.org/master/class/lib/model.js~Model.html}
@@ -28,17 +28,19 @@ module.exports = (sequelize, DataTypes) => {
    *       - created_at
    *       properties:
    *         id:
-   *           type: number
+   *           type: string
+   *           format: uuid
    *           description: Unique merchant ID
-   *           example: 34
+   *           example: d628c599-6282-4e35-b05b-4a6990e678fa
    *         merchant_name:
    *           type: string
    *           description: How the user would like to be named as merchant
    *           example: Jamie Stone
    *         admin_id:
-   *           type: number
+   *           type: string
+   *           format: uuid
    *           description: Association to the `users` entity. Shows which user uses this merchant entity.
-   *           example: 13
+   *           example: d628c599-6282-4e35-b05b-4a6990e678fa
    *         country_code:
    *           type: number
    *           description: Association to the country entity. Shows user country address.
@@ -52,17 +54,17 @@ module.exports = (sequelize, DataTypes) => {
    */
   const merchants = sequelize.define('merchants', {
     id: {
-      primaryKey: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
-      autoIncrement: true,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
     },
     merchant_name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
     admin_id: {
-      type: DataTypes.STRING,
+      type: DataTypes.UUID,
       allowNull: false,
       references: {
         model: 'users',

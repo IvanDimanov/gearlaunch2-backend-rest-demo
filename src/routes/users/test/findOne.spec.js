@@ -25,7 +25,7 @@ describe(apiPath, () => {
     });
 
     user = {
-      id: 1,
+      id: '25c127c4-2756-4a21-80af-3bcac4641939',
       full_name: 'test',
       country_code: 20,
       created_at: '2020-01-01T00:00:00.000Z',
@@ -42,7 +42,7 @@ describe(apiPath, () => {
         },
       },
       params: {
-        id: 1,
+        id: '25c127c4-2756-4a21-80af-3bcac4641939',
       },
       logger: {
         log: () => {},

@@ -6,8 +6,8 @@ module.exports = (sequelize, DataTypes) => {
    * @type {external:Model}
    * @extends {external:Model}
    * @memberof db
-   * @property {number} id - Unique order ID
-   * @property {number} user_id - Association to the `users` entity. Shows which user bought this product.
+   * @property {string} id - Unique order ID
+   * @property {string} user_id - Association to the `users` entity. Shows which user bought this product.
    * @property {string} status - A free text field to indicate if the order is paid.
    * @property {string} created_at - DateTime indicating when that order was created
    * @see {@link https://sequelize.org/master/class/lib/model.js~Model.html}
@@ -26,13 +26,15 @@ module.exports = (sequelize, DataTypes) => {
    *       - created_at
    *       properties:
    *         id:
-   *           type: number
+   *           type: string
+   *           format: uuid
    *           description: Unique order ID
-   *           example: 34
+   *           example: d628c599-6282-4e35-b05b-4a6990e678fa
    *         user_id:
-   *           type: number
+   *           type: string
+   *           format: uuid
    *           description: Association to the `users` entity. Shows which user bought this product.
-   *           example: 14
+   *           example: d628c599-6282-4e35-b05b-4a6990e678fa
    *         status:
    *           type: string
    *           description: A free text field to indicate if the order is paid.
@@ -46,13 +48,13 @@ module.exports = (sequelize, DataTypes) => {
    */
   const orders = sequelize.define('orders', {
     id: {
-      primaryKey: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
-      autoIncrement: true,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
     },
     user_id: {
-      type: DataTypes.STRING,
+      type: DataTypes.UUID,
       allowNull: false,
       references: {
         model: 'users',

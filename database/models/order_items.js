@@ -6,9 +6,9 @@ module.exports = (sequelize, DataTypes) => {
    * @type {external:Model}
    * @extends {external:Model}
    * @memberof db
-   * @property {number} id - Unique order item ID
-   * @property {number} product_id - Association to the `products` entity. Shows which product was bought.
-   * @property {number} order_id - Association to the `orders` entity. Shows which order bought the related product.
+   * @property {string} id - Unique order item ID
+   * @property {string} product_id - Association to the `products` entity. Shows which product was bought.
+   * @property {string} order_id - Association to the `orders` entity. Shows which order bought the related product.
    * @property {number} quantity - Shows how much of the product was bought.
    * @see {@link https://sequelize.org/master/class/lib/model.js~Model.html}
    *
@@ -26,17 +26,20 @@ module.exports = (sequelize, DataTypes) => {
    *       - quantity
    *       properties:
    *         id:
-   *           type: number
+   *           type: string
+   *           format: uuid
    *           description: Unique order item ID
-   *           example: 34
+   *           example: d628c599-6282-4e35-b05b-4a6990e678fa
    *         product_id:
-   *           type: number
+   *           type: string
+   *           format: uuid
    *           description: Association to the `products` entity. Shows which product was bought.
-   *           example: 100
+   *           example: d628c599-6282-4e35-b05b-4a6990e678fa
    *         order_id:
-   *           type: number
+   *           type: string
+   *           format: uuid
    *           description: Association to the `orders` entity. Shows which order bought the related product.
-   *           example: 200
+   *           example: d628c599-6282-4e35-b05b-4a6990e678fa
    *         quantity:
    *           type: number
    *           description: Shows how much of the product was bought.
@@ -44,20 +47,20 @@ module.exports = (sequelize, DataTypes) => {
    */
   const orderItems = sequelize.define('order_items', {
     id: {
-      primaryKey: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
-      autoIncrement: true,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
     },
     product_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
       references: {
         model: 'products',
       },
     },
     order_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
       references: {
         model: 'orders',

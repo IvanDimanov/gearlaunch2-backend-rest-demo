@@ -158,6 +158,15 @@ if (process.env.NODE_ENV === 'test') {
  *     description: |
  *       The `id` property of the entity we want to retrieve.
  *
+ *   PathUniqueIdentifierV4:
+ *     in: path
+ *     name: id
+ *     type: string
+ *     format: uuid
+ *     required: true
+ *     description: |
+ *       The string literal `UUIDv4` of the Entity we want to retrieve.
+ *
  *   QueryUniqueIdentifierV4:
  *     in: query
  *     name: id

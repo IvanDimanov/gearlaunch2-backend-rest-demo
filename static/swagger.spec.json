@@ -4,10 +4,10 @@
     "version": "1.0.0",
     "description": "GearLaunch v2 Rest Demo Backend"
   },
-  "host": "gearlaunch2-backend-rest-demo.herokuapp.com",
+  "host": "localhost:8000",
   "schemes": [
-    "https",
-    "http"
+    "http",
+    "https"
   ],
   "basePath": "/",
   "components": {
@@ -225,6 +225,49 @@
         }
       }
     },
+    "/api/accounts/v1/status/ping-cache": {
+      "get": {
+        "tags": [
+          "Status"
+        ],
+        "summary": "Cached ping check",
+        "description": "Common ping test to check if `Accounts BackEnd` is still alive.\nYou can test caching by sending the `cacheInSeconds` param.\n",
+        "operationId": "getCachedServiceStatus",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "cacheInSeconds",
+            "type": "number",
+            "example": 10,
+            "default": 10,
+            "description": "Tell Varnish how much time to keep this API response in cache.\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "General info about the Server.",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "BackEnd Accounts",
+                "description": "A distinctive name of the current Accounts server."
+              },
+              "serverTime": {
+                "type": "string",
+                "example": "2019-09-24T17:43:21.142Z",
+                "description": "Server ISO time."
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/responses/AppNotFound"
+          }
+        }
+      }
+    },
     "/api/accounts/v1/status/ping": {
       "get": {
         "tags": [
@@ -373,7 +416,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/parameters/PathUniqueIdentifier"
+            "$ref": "#/parameters/PathUniqueIdentifierV4"
           },
           {
             "name": "select",
@@ -481,9 +524,10 @@
           ],
           "properties": {
             "id": {
-              "type": "number",
+              "type": "string",
+              "format": "uuid",
               "description": "Unique merchant ID",
-              "example": 34
+              "example": "d628c599-6282-4e35-b05b-4a6990e678fa"
             },
             "merchant_name": {
               "type": "string",
@@ -491,9 +535,10 @@
               "example": "Jamie Stone"
             },
             "admin_id": {
-              "type": "number",
+              "type": "string",
+              "format": "uuid",
               "description": "Association to the `users` entity. Shows which user uses this merchant entity.",
-              "example": 13
+              "example": "d628c599-6282-4e35-b05b-4a6990e678fa"
             },
             "country_code": {
               "type": "number",
@@ -524,19 +569,22 @@
           ],
           "properties": {
             "id": {
-              "type": "number",
+              "type": "string",
+              "format": "uuid",
               "description": "Unique order item ID",
-              "example": 34
+              "example": "d628c599-6282-4e35-b05b-4a6990e678fa"
             },
             "product_id": {
-              "type": "number",
+              "type": "string",
+              "format": "uuid",
               "description": "Association to the `products` entity. Shows which product was bought.",
-              "example": 100
+              "example": "d628c599-6282-4e35-b05b-4a6990e678fa"
             },
             "order_id": {
-              "type": "number",
+              "type": "string",
+              "format": "uuid",
               "description": "Association to the `orders` entity. Shows which order bought the related product.",
-              "example": 200
+              "example": "d628c599-6282-4e35-b05b-4a6990e678fa"
             },
             "quantity": {
               "type": "number",
@@ -560,14 +608,16 @@
           ],
           "properties": {
             "id": {
-              "type": "number",
+              "type": "string",
+              "format": "uuid",
               "description": "Unique order ID",
-              "example": 34
+              "example": "d628c599-6282-4e35-b05b-4a6990e678fa"
             },
             "user_id": {
-              "type": "number",
+              "type": "string",
+              "format": "uuid",
               "description": "Association to the `users` entity. Shows which user bought this product.",
-              "example": 14
+              "example": "d628c599-6282-4e35-b05b-4a6990e678fa"
             },
             "status": {
               "type": "string",
@@ -600,9 +650,10 @@
           ],
           "properties": {
             "id": {
-              "type": "number",
+              "type": "string",
+              "format": "uuid",
               "description": "Unique merchant ID",
-              "example": 34
+              "example": "d628c599-6282-4e35-b05b-4a6990e678fa"
             },
             "name": {
               "type": "string",
@@ -610,9 +661,10 @@
               "example": "Jeans"
             },
             "merchant_id": {
-              "type": "number",
+              "type": "string",
+              "format": "uuid",
               "description": "Association to the `merchants` entity. Shows which merchants sells this product.",
-              "example": 14
+              "example": "d628c599-6282-4e35-b05b-4a6990e678fa"
             },
             "price": {
               "type": "number",
@@ -649,9 +701,10 @@
           ],
           "properties": {
             "id": {
-              "type": "number",
+              "type": "string",
+              "format": "uuid",
               "description": "Unique user ID",
-              "example": 34
+              "example": "d628c599-6282-4e35-b05b-4a6990e678fa"
             },
             "full_name": {
               "type": "string",
@@ -755,6 +808,14 @@
       "format": "integer",
       "required": true,
       "description": "The `id` property of the entity we want to retrieve.\n"
+    },
+    "PathUniqueIdentifierV4": {
+      "in": "path",
+      "name": "id",
+      "type": "string",
+      "format": "uuid",
+      "required": true,
+      "description": "The string literal `UUIDv4` of the Entity we want to retrieve.\n"
     },
     "QueryUniqueIdentifierV4": {
       "in": "query",

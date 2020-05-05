@@ -7,7 +7,7 @@ const {
   validator,
 } = require('../../../utils/koa');
 
-const {SelectSchema, IDSchema} = require('../../validators/params');
+const {SelectSchema, UUIDv4Schema} = require('../../validators/params');
 
 const getModelByName = require('../../../utils/query/getModelByName');
 const getFindOptions = require('../../../utils/query/getFindOptions');
@@ -26,7 +26,7 @@ const getFindOptions = require('../../../utils/query/getFindOptions');
  *     produces:
  *       - application/json
  *     parameters:
- *       - $ref: '#/parameters/PathUniqueIdentifier'
+ *       - $ref: '#/parameters/PathUniqueIdentifierV4'
  *       - name: select
  *         in: query
  *         type: object
@@ -114,7 +114,7 @@ const getFindOptions = require('../../../utils/query/getFindOptions');
 router.get('/api/accounts/v1/users/:id',
     parseSelectFromQuery,
     validator.query(SelectSchema),
-    validator.params(IDSchema),
+    validator.params(UUIDv4Schema),
 
     async (ctx) => {
       const {id} = ctx.params;

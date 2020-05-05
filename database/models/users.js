@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
    * @type {external:Model}
    * @extends {external:Model}
    * @memberof db
-   * @property {number} id - Unique user ID
+   * @property {string} id - Unique user ID
    * @property {string} full_name - User names
    * @property {number} country_code - Association to the `country` entity. Shows user country address.
    * @property {string} created_at - DateTime indicating when that user was created
@@ -28,9 +28,10 @@ module.exports = (sequelize, DataTypes) => {
    *       - created_at
    *       properties:
    *         id:
-   *           type: number
+   *           type: string
+   *           format: uuid
    *           description: Unique user ID
-   *           example: 34
+   *           example: d628c599-6282-4e35-b05b-4a6990e678fa
    *         full_name:
    *           type: string
    *           description: User names
@@ -48,10 +49,10 @@ module.exports = (sequelize, DataTypes) => {
    */
   const users = sequelize.define('users', {
     id: {
-      primaryKey: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
-      autoIncrement: true,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
     },
     full_name: {
       type: DataTypes.STRING,

@@ -39,6 +39,7 @@ describe('/query/getInclude', () => {
           model: 'childObjectModel',
           as: 'childObject',
           required: true,
+          duplicating: false,
         }]
     );
   });

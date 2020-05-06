@@ -4,10 +4,8 @@ const getWhere = require('./getWhere');
 const getOrder = require('./getOrder');
 
 
-const getFindOptions = ({select = {}, pagination = {}, Op, getModelByName}) => {
-  const options = {
-    ...pagination,
-  };
+const getFindOptions = ({select = {}, Op, getModelByName}) => {
+  const options = {};
 
   const attributes = getAttributes(select);
   if (attributes) {
@@ -28,6 +26,16 @@ const getFindOptions = ({select = {}, pagination = {}, Op, getModelByName}) => {
   const order = getOrder(select['$order'], getModelByName);
   if (order) {
     options.order = order;
+  }
+
+  const offset = select['$offset'];
+  if (Number.isInteger(offset)) {
+    options.offset = offset;
+  }
+
+  const limit = select['$limit'];
+  if (Number.isInteger(limit)) {
+    options.limit = limit;
   }
 
   return options;

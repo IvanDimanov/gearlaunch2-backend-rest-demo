@@ -11,7 +11,14 @@ const Joi = require('@hapi/joi');
  */
 const SelectSchema = Joi.object()
     .keys({
-      select: Joi.object().default({}),
+      select: Joi.object().keys({
+        '$where': Joi.object(),
+        '$order': Joi.array(),
+        '$offset': Joi.number().integer().min(0),
+        '$limit': Joi.number().integer().min(1),
+      })
+      .unknown()
+      .default({}),
     });
 
 module.exports = SelectSchema;

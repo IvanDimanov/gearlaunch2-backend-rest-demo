@@ -16,10 +16,10 @@ const getFindOptions = require('../../../utils/query/getFindOptions');
  *   get:
  *     tags:
  *       - Accounts
- *     summary: Find all Users
+ *     summary: Find and count all Users
  *     description: |
- *       This API returns a list of all `Users` based on common `select` request.
- *     operationId: findAllUsers
+ *       Returns a list of `Users` that matched the `select` criteria.
+ *     operationId: findAndCountAllUsers
  *     produces:
  *       - application/json
  *     parameters:
@@ -36,6 +36,18 @@ const getFindOptions = require('../../../utils/query/getFindOptions');
  *             "full_name": ""
  *           }
  *           ```
+ *           <br />
+ *
+ *           Whenever you fee like you want only a slice of the response you can apply pagination via the `$offset` and `$limit` props.
+ *           For example, if you'd like to get page **3** of all `Users` with a maximum of **5** rows per page, you can submit this `select`:
+ *           ```
+ *           {
+ *             "full_name": "",
+ *             "$offset": 10,
+ *             "$limit": 5
+ *           }
+ *           ```
+ *           <br />
  *
  *           Filtration is also supported with the special key of `"$where":{}`. The `$where` object supports all comparison operators
  *           from Sequelize ORM https://sequelize.org/master/manual/model-querying-basics.html#operators. Please note that operations are prefixed, e.g. instead of `Op.eq` => `$eq`.
@@ -55,6 +67,7 @@ const getFindOptions = require('../../../utils/query/getFindOptions');
  *             }
  *           }
  *           ```
+ *           <br />
  *
  *           Similarly, you can use the `"$order":[]` object to set a specific order of your results. The `$order` object is an array of rules that will be applied starting from the first rule in the array down to the last one.
  *
@@ -77,17 +90,30 @@ const getFindOptions = require('../../../utils/query/getFindOptions');
  *             ]
  *           }
  *           ```
+ *           <br />
  *
  *         default:
  *           full_name: ''
+ *
  *     responses:
  *       200:
  *         description: |
- *           An array of `Users` that matched the request parameters.
+ *           `count` and `rows` response of `Users` that matched the request parameters.
  *         schema:
- *           type: 'array'
- *           items:
- *             $ref: '#/definitions/DatabaseUser'
+ *           type: object
+ *           properties:
+ *             count:
+ *               type: number
+ *               format: integer
+ *               description: |
+ *                 Total number of records that match the `select` criteria.
+ *               example: 12
+ *             rows:
+ *               description: |
+ *                 An array of `Users` that matched the request parameters.
+ *               type: 'array'
+ *               items:
+ *                 $ref: '#/definitions/DatabaseUser'
  *       500:
  *         $ref: '#/responses/AppNotFound'
  */
@@ -101,7 +127,7 @@ router.get('/api/accounts/v1/users',
       const {Sequelize: {Op}} = models;
 
       const findOptions = getFindOptions({select, Op, getModelByName});
-      const users = await models.users.findAll(findOptions);
+      const users = await models.users.findAndCountAll(findOptions);
 
       ctx.body = users;
     }

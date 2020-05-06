@@ -1,30 +1,32 @@
 const sinon = require('sinon');
 
 const {koaRouterRunner} = require('../../../../utils/testing');
-const router = require('../findAll');
+const router = require('../findAndCountAll');
 
 const apiMethod = 'GET';
-const apiPath = '/api/accounts/v1/countries';
+const apiPath = '/api/products/v1/order_items';
 
 
 describe(apiPath, () => {
   let layer;
   let emit;
   let ctx;
-  let country;
+  let orderItem;
 
 
   beforeEach(() => {
     layer = ((router || {}).stack || []).find(({path, methods}) => path === apiPath && methods.includes(apiMethod));
     emit = sinon.spy();
 
-    country = {
-      code: 20,
-      name: 'test',
-      continent_name: 'test',
+    orderItem = {
+      id: 11,
+      quantity: 20,
     };
 
-    const countriesFindAll = sinon.stub().returns(Promise.resolve([country]));
+    const orderItemsFindAndCountAll = sinon.stub().returns(Promise.resolve({
+      count: 1,
+      rows: [orderItem],
+    }));
 
 
     ctx = {
@@ -50,8 +52,8 @@ describe(apiPath, () => {
           Sequelize: {
             Op: {},
           },
-          countries: {
-            findAll: countriesFindAll,
+          order_items: {
+            findAndCountAll: orderItemsFindAndCountAll,
           },
         },
       },
@@ -62,6 +64,9 @@ describe(apiPath, () => {
   it('should work as expected with test data', async () => {
     await koaRouterRunner(layer.stack, ctx);
 
-    expect(ctx.body).to.deep.equal([country]);
+    expect(ctx.body).to.deep.equal({
+      count: 1,
+      rows: [orderItem],
+    });
   });
 });

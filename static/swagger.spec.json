@@ -39,9 +39,9 @@
         "tags": [
           "Accounts"
         ],
-        "summary": "Find all Countries",
-        "description": "This API returns a list of all `Countries` based on common `select` request.\n",
-        "operationId": "findAllCountries",
+        "summary": "Find and count all Countries",
+        "description": "Returns a list of `Countries` that matched the `select` criteria.\n",
+        "operationId": "findAndCountAllCountries",
         "produces": [
           "application/json"
         ],
@@ -50,7 +50,7 @@
             "name": "select",
             "in": "query",
             "type": "object",
-            "description": "The `select` query object is used to point what data the API need to return.\nAdding a property to the `select` object will return the corresponding data.\n\nFor example, if you'd like to get a list of all `Countries` with their continent, you can submit this `select`:\n```\n{\n  \"name\": \"\",\n  \"continent_name\": \"\"\n}\n```\n\nFiltration is also supported with the special key of `\"$where\":{}`. The `$where` object supports all comparison operators\nfrom Sequelize ORM https://sequelize.org/master/manual/model-querying-basics.html#operators. Please note that operations are prefixed, e.g. instead of `Op.eq` => `$eq`.\n\nFor example, if you'd like to get a list of all `Countries` within the continent of `Africa`, you can submit this `select`:\n```\n{\n  \"name\": \"\",\n  \"$where\": {\n    \"continent_name\": {\n      \"$eq\": \"Africa\"\n    }\n  }\n}\n```\n\nSimilarly, you can use the `\"$order\":[]` object to set a specific order of your results. The `$order` object is an array of rules that will be applied starting from the first rule in the array down to the last one.\n\nFor example, if you'd like to get a list of all `Countries` ordered by continent in \"asc\" direction but\nsort countries in the same continent by name in \"desc\" direction then you can submit this `select`:\n```\n{\n  \"continent_name\": \"\",\n  \"name\": \"\",\n  \"$order\": [\n    [\"continent_name\", \"asc\"],\n    [\"name\", \"desc\"]\n  ]\n}\n```\n",
+            "description": "The `select` query object is used to point what data the API need to return.\nAdding a property to the `select` object will return the corresponding data.\n\nFor example, if you'd like to get a list of all `Countries` with their continent, you can submit this `select`:\n```\n{\n  \"name\": \"\",\n  \"continent_name\": \"\"\n}\n```\n<br />\n\nWhenever you fee like you want only a slice of the response you can apply pagination via the `$offset` and `$limit` props.\nFor example, if you'd like to get page **3** of all `Countries` with a maximum of **5** rows per page, you can submit this `select`:\n```\n{\n  \"name\": \"\",\n  \"continent_name\": \"\",\n  \"$offset\": 10,\n  \"$limit\": 5\n}\n```\n<br />\n\nFiltration is also supported with the special key of `\"$where\":{}`. The `$where` object supports all comparison operators\nfrom Sequelize ORM https://sequelize.org/master/manual/model-querying-basics.html#operators. Please note that operations are prefixed, e.g. instead of `Op.eq` => `$eq`.\n\nFor example, if you'd like to get a list of all `Countries` within the continent of `Africa`, you can submit this `select`:\n```\n{\n  \"name\": \"\",\n  \"$where\": {\n    \"continent_name\": {\n      \"$eq\": \"Africa\"\n    }\n  }\n}\n```\n<br />\n\nSimilarly, you can use the `\"$order\":[]` object to set a specific order of your results. The `$order` object is an array of rules that will be applied starting from the first rule in the array down to the last one.\n\nFor example, if you'd like to get a list of all `Countries` ordered by continent in \"asc\" direction but\nsort countries in the same continent by name in \"desc\" direction then you can submit this `select`:\n```\n{\n  \"continent_name\": \"\",\n  \"name\": \"\",\n  \"$order\": [\n    [\"continent_name\", \"asc\"],\n    [\"name\", \"desc\"]\n  ]\n}\n```\n<br />\n",
             "default": {
               "code": "",
               "name": ""
@@ -59,13 +59,28 @@
         ],
         "responses": {
           "200": {
-            "description": "An array of `Countries` that matched the request parameters.\n",
+            "description": "`count` and `rows` response of `Countries` that matched the request parameters.\n",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/DatabaseCountry"
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "number",
+                  "format": "integer",
+                  "description": "Total number of records that match the `select` criteria.\n",
+                  "example": 12
+                },
+                "rows": {
+                  "description": "An array of `Countries` that matched the request parameters.\n",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/DatabaseCountry"
+                  }
+                }
               }
             }
+          },
+          "400": {
+            "$ref": "#/responses/InvalidRequest"
           },
           "500": {
             "$ref": "#/responses/AppNotFound"
@@ -78,9 +93,9 @@
         "tags": [
           "Accounts"
         ],
-        "summary": "Find all Merchants",
-        "description": "This API returns a list of all `Merchants` based on common `select` request.\n",
-        "operationId": "findAllMerchants",
+        "summary": "Find and count all Merchants",
+        "description": "Returns a list of `Merchants` that matched the `select` criteria.\n",
+        "operationId": "findAndCountAllMerchants",
         "produces": [
           "application/json"
         ],
@@ -89,7 +104,7 @@
             "name": "select",
             "in": "query",
             "type": "object",
-            "description": "The `select` query object is used to point what data the API need to return.\nAdding a property to the `select` object will return the corresponding data.\n\nFor example, if you'd like to get a list of all `Merchants`, you can submit this `select`:\n```\n{\n  \"merchant_name\": \"\"\n}\n```\n\nFiltration is also supported with the special key of `\"$where\":{}`. The `$where` object supports all comparison operators\nfrom Sequelize ORM https://sequelize.org/master/manual/model-querying-basics.html#operators. Please note that operations are prefixed, e.g. instead of `Op.eq` => `$eq`.\n\nFor example, if you'd like to get a list of all `Merchants` within the continent of `Africa`, you can submit this `select`:\n```\n{\n  \"merchant_name\": \"\",\n  \"country\": {\n    \"name\": \"\",\n    \"continent_name\": \"\",\n    \"$where\": {\n      \"continent_name\": {\n        \"$eq\": \"Africa\"\n      }\n    }\n  }\n}\n```\n\nSimilarly, you can use the `\"$order\":[]` object to set a specific order of your results. The `$order` object is an array of rules that will be applied starting from the first rule in the array down to the last one.\n\nFor example, if you'd like to get a list of all `Merchants` ordered by country in \"asc\" direction but\nalso sort their `Products` price in \"desc\" direction then you can submit this `select`:\n```\n{\n  \"merchant_name\": \"\",\n  \"country\": {\n    \"name\": \"\"\n  },\n  \"products\": {\n    \"price\": \"\"\n  },\n  \"$order\": [\n    [\"country.name\", \"asc\"],\n    [\"products.price\", \"desc\"]\n  ]\n}\n```\n",
+            "description": "The `select` query object is used to point what data the API need to return.\nAdding a property to the `select` object will return the corresponding data.\n\nFor example, if you'd like to get a list of all `Merchants`, you can submit this `select`:\n```\n{\n  \"merchant_name\": \"\"\n}\n```\n<br />\n\nWhenever you fee like you want only a slice of the response you can apply pagination via the `$offset` and `$limit` props.\nFor example, if you'd like to get page **3** of all `Merchants` with a maximum of **5** rows per page, you can submit this `select`:\n```\n{\n  \"merchant_name\": \"\",\n  \"$offset\": 10,\n  \"$limit\": 5\n}\n```\n<br />\n\nFiltration is also supported with the special key of `\"$where\":{}`. The `$where` object supports all comparison operators\nfrom Sequelize ORM https://sequelize.org/master/manual/model-querying-basics.html#operators. Please note that operations are prefixed, e.g. instead of `Op.eq` => `$eq`.\n\nFor example, if you'd like to get a list of all `Merchants` within the continent of `Africa`, you can submit this `select`:\n```\n{\n  \"merchant_name\": \"\",\n  \"country\": {\n    \"name\": \"\",\n    \"continent_name\": \"\",\n    \"$where\": {\n      \"continent_name\": {\n        \"$eq\": \"Africa\"\n      }\n    }\n  }\n}\n```\n<br />\n\nSimilarly, you can use the `\"$order\":[]` object to set a specific order of your results. The `$order` object is an array of rules that will be applied starting from the first rule in the array down to the last one.\n\nFor example, if you'd like to get a list of all `Merchants` ordered by country in \"asc\" direction but\nalso sort their `Products` price in \"desc\" direction then you can submit this `select`:\n```\n{\n  \"merchant_name\": \"\",\n  \"country\": {\n    \"name\": \"\"\n  },\n  \"products\": {\n    \"price\": \"\"\n  },\n  \"$order\": [\n    [\"country.name\", \"asc\"],\n    [\"products.price\", \"desc\"]\n  ]\n}\n```\n<br />\n",
             "default": {
               "merchant_name": ""
             }
@@ -97,11 +112,23 @@
         ],
         "responses": {
           "200": {
-            "description": "An array of `Merchants` that matched the request parameters.\n",
+            "description": "`count` and `rows` response of `Merchants` that matched the request parameters.\n",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/DatabaseMerchant"
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "number",
+                  "format": "integer",
+                  "description": "Total number of records that match the `select` criteria.\n",
+                  "example": 12
+                },
+                "rows": {
+                  "description": "An array of `Merchants` that matched the request parameters.\n",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/DatabaseMerchant"
+                  }
+                }
               }
             }
           },
@@ -116,9 +143,9 @@
         "tags": [
           "Products"
         ],
-        "summary": "Find all OrderItems",
-        "description": "This API returns a list of all `OrderItems` based on common `select` request.\n",
-        "operationId": "findAllOrderItems",
+        "summary": "Find and count all OrderItems",
+        "description": "Returns a list of `OrderItems` that matched the `select` criteria.\n",
+        "operationId": "findAndCountAllOrderItems",
         "produces": [
           "application/json"
         ],
@@ -127,7 +154,7 @@
             "name": "select",
             "in": "query",
             "type": "object",
-            "description": "The `select` query object is used to point what data the API need to return.\nAdding a property to the `select` object will return the corresponding data.\n\nFor example, if you'd like to get a list of all `OrderItems`, you can submit this `select`:\n```\n{\n  \"quantity\": \"\"\n}\n```\n\nFiltration is also supported with the special key of `\"$where\":{}`. The `$where` object supports all comparison operators\nfrom Sequelize ORM https://sequelize.org/master/manual/model-querying-basics.html#operators. Please note that operations are prefixed, e.g. instead of `Op.eq` => `$eq`.\n\nFor example, if you'd like to get a list of all `OrderItems` that are `in_progress` for all buyer `Users` in Africa, you can submit this `select`:\n```\n{\n  \"quantity\": \"\",\n  \"product\": {\n    \"name\": \"\"\n  },\n  \"order\": {\n    \"status\": \"\",\n    \"$where\": {\n      \"status\": {\n        \"$eq\": \"in_progress\"\n      }\n    },\n    \"user\": {\n      \"full_name\": \"\",\n      \"country\": {\n        \"name\": \"\",\n        \"continent_name\": \"\",\n        \"$where\": {\n          \"continent_name\": {\n            \"$eq\": \"Africa\"\n          }\n        }\n      }\n    }\n  }\n}\n```\n\nSimilarly, you can use the `\"$order\":[]` object to set a specific order of your results. The `$order` object is an array of rules that will be applied starting from the first rule in the array down to the last one.\n\nFor example, if you'd like to get a list of all `Order_items` sorted by their highest quantity and\nif two products were bought with the same quantity then sort them by their highest `Products` price, you can submit this `select`:\n```\n{\n  \"quantity\": \"\",\n  \"product\": {\n    \"name\": \"\",\n    \"price\": \"\"\n  },\n  \"$order\": [\n    [\"quantity\", \"desc\"],\n    [\"product.price\", \"desc\"]\n  ]\n}\n```\n",
+            "description": "The `select` query object is used to point what data the API need to return.\nAdding a property to the `select` object will return the corresponding data.\n\nFor example, if you'd like to get a list of all `OrderItems`, you can submit this `select`:\n```\n{\n  \"quantity\": \"\"\n}\n```\n<br />\n\nWhenever you fee like you want only a slice of the response you can apply pagination via the `$offset` and `$limit` props.\nFor example, if you'd like to get page **3** of all `OrderItems` with a maximum of **5** rows per page, you can submit this `select`:\n```\n{\n  \"quantity\": \"\",\n  \"$offset\": 10,\n  \"$limit\": 5\n}\n```\n<br />\n\nFiltration is also supported with the special key of `\"$where\":{}`. The `$where` object supports all comparison operators\nfrom Sequelize ORM https://sequelize.org/master/manual/model-querying-basics.html#operators. Please note that operations are prefixed, e.g. instead of `Op.eq` => `$eq`.\n\nFor example, if you'd like to get a list of all `OrderItems` that are `in_progress` for all buyer `Users` in Africa, you can submit this `select`:\n```\n{\n  \"quantity\": \"\",\n  \"product\": {\n    \"name\": \"\"\n  },\n  \"order\": {\n    \"status\": \"\",\n    \"$where\": {\n      \"status\": {\n        \"$eq\": \"in_progress\"\n      }\n    },\n    \"user\": {\n      \"full_name\": \"\",\n      \"country\": {\n        \"name\": \"\",\n        \"continent_name\": \"\",\n        \"$where\": {\n          \"continent_name\": {\n            \"$eq\": \"Africa\"\n          }\n        }\n      }\n    }\n  }\n}\n```\n<br />\n\nSimilarly, you can use the `\"$order\":[]` object to set a specific order of your results. The `$order` object is an array of rules that will be applied starting from the first rule in the array down to the last one.\n\nFor example, if you'd like to get a list of all `Order_items` sorted by their highest quantity and\nif two products were bought with the same quantity then sort them by their highest `Products` price, you can submit this `select`:\n```\n{\n  \"quantity\": \"\",\n  \"product\": {\n    \"name\": \"\",\n    \"price\": \"\"\n  },\n  \"$order\": [\n    [\"quantity\", \"desc\"],\n    [\"product.price\", \"desc\"]\n  ]\n}\n```\n<br />\n",
             "default": {
               "quantity": ""
             }
@@ -135,11 +162,23 @@
         ],
         "responses": {
           "200": {
-            "description": "An array of `OrderItems` that matched the request parameters.\n",
+            "description": "`count` and `rows` response of `OrderItems` that matched the request parameters.\n",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/DatabaseOrderItem"
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "number",
+                  "format": "integer",
+                  "description": "Total number of records that match the `select` criteria.\n",
+                  "example": 12
+                },
+                "rows": {
+                  "description": "An array of `OrderItems` that matched the request parameters.\n",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/DatabaseOrderItem"
+                  }
+                }
               }
             }
           },
@@ -154,9 +193,9 @@
         "tags": [
           "Products"
         ],
-        "summary": "Find all Orders",
-        "description": "This API returns a list of all `Orders` based on common `select` request.\n",
-        "operationId": "findAllOrders",
+        "summary": "Find and count all Orders",
+        "description": "Returns a list of `Orders` that matched the `select` criteria.\n",
+        "operationId": "findAndCountAllOrders",
         "produces": [
           "application/json"
         ],
@@ -165,7 +204,7 @@
             "name": "select",
             "in": "query",
             "type": "object",
-            "description": "The `select` query object is used to point what data the API need to return.\nAdding a property to the `select` object will return the corresponding data.\n\nFor example, if you'd like to get a list of all `Orders`, you can submit this `select`:\n```\n{\n  \"status\": \"\"\n}\n```\n\nFiltration is also supported with the special key of `\"$where\":{}`. The `$where` object supports all comparison operators\nfrom Sequelize ORM https://sequelize.org/master/manual/model-querying-basics.html#operators. Please note that operations are prefixed, e.g. instead of `Op.eq` => `$eq`.\n\nFor example, if you'd like to get a list of all `Orders` with status `in_progress` that were bought by `Users` from Africa, you can submit this `select`:\n```\n{\n  \"status\": \"\",\n  \"$where\": {\n    \"status\": {\n      \"$eq\": \"in_progress\"\n    }\n  },\n  \"user\": {\n    \"full_name\": \"\",\n    \"country\": {\n      \"name\": \"\",\n      \"continent_name\": \"\",\n      \"$where\": {\n        \"continent_name\": {\n          \"$eq\": \"Africa\"\n        }\n      }\n    }\n  }\n}\n```\n\nSimilarly, you can use the `\"$order\":[]` object to set a specific order of your results. The `$order` object is an array of rules that will be applied starting from the first rule in the array down to the last one.\n\nFor example, if you'd like to get a list of all latest `Orders` sorted by their buyer `User` country, you can submit this `select`:\n```\n{\n  \"status\": \"\",\n  \"created_at\": \"\",\n  \"user\": {\n    \"full_name\": \"\",\n    \"country\": {\n      \"name\": \"\"\n    }\n  },\n  \"$order\": [\n    [\"created_at\", \"desc\"],\n    [\"user.country.name\", \"asc\"]\n  ]\n}\n```\n",
+            "description": "The `select` query object is used to point what data the API need to return.\nAdding a property to the `select` object will return the corresponding data.\n\nFor example, if you'd like to get a list of all `Orders`, you can submit this `select`:\n```\n{\n  \"status\": \"\"\n}\n```\n<br />\n\nWhenever you fee like you want only a slice of the response you can apply pagination via the `$offset` and `$limit` props.\nFor example, if you'd like to get page **3** of all `Orders` with a maximum of **5** rows per page, you can submit this `select`:\n```\n{\n  \"status\": \"\",\n  \"$offset\": 10,\n  \"$limit\": 5\n}\n```\n<br />\n\nFiltration is also supported with the special key of `\"$where\":{}`. The `$where` object supports all comparison operators\nfrom Sequelize ORM https://sequelize.org/master/manual/model-querying-basics.html#operators. Please note that operations are prefixed, e.g. instead of `Op.eq` => `$eq`.\n\nFor example, if you'd like to get a list of all `Orders` with status `in_progress` that were bought by `Users` from Africa, you can submit this `select`:\n```\n{\n  \"status\": \"\",\n  \"$where\": {\n    \"status\": {\n      \"$eq\": \"in_progress\"\n    }\n  },\n  \"user\": {\n    \"full_name\": \"\",\n    \"country\": {\n      \"name\": \"\",\n      \"continent_name\": \"\",\n      \"$where\": {\n        \"continent_name\": {\n          \"$eq\": \"Africa\"\n        }\n      }\n    }\n  }\n}\n```\n<br />\n\nSimilarly, you can use the `\"$order\":[]` object to set a specific order of your results. The `$order` object is an array of rules that will be applied starting from the first rule in the array down to the last one.\n\nFor example, if you'd like to get a list of all latest `Orders` sorted by their buyer `User` country, you can submit this `select`:\n```\n{\n  \"status\": \"\",\n  \"created_at\": \"\",\n  \"user\": {\n    \"full_name\": \"\",\n    \"country\": {\n      \"name\": \"\"\n    }\n  },\n  \"$order\": [\n    [\"created_at\", \"desc\"],\n    [\"user.country.name\", \"asc\"]\n  ]\n}\n```\n<br />\n",
             "default": {
               "status": ""
             }
@@ -173,11 +212,23 @@
         ],
         "responses": {
           "200": {
-            "description": "An array of `Orders` that matched the request parameters.\n",
+            "description": "`count` and `rows` response of `Orders` that matched the request parameters.\n",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/DatabaseOrder"
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "number",
+                  "format": "integer",
+                  "description": "Total number of records that match the `select` criteria.\n",
+                  "example": 12
+                },
+                "rows": {
+                  "description": "An array of `Orders` that matched the request parameters.\n",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/DatabaseOrder"
+                  }
+                }
               }
             }
           },
@@ -192,9 +243,9 @@
         "tags": [
           "Products"
         ],
-        "summary": "Find all Products",
-        "description": "This API returns a list of all `Products` based on common `select` request.\n",
-        "operationId": "findAllProducts",
+        "summary": "Find and count all Products",
+        "description": "Returns a list of `Products` that matched the `select` criteria.\n",
+        "operationId": "findAndCountAllProducts",
         "produces": [
           "application/json"
         ],
@@ -203,7 +254,7 @@
             "name": "select",
             "in": "query",
             "type": "object",
-            "description": "The `select` query object is used to point what data the API need to return.\nAdding a property to the `select` object will return the corresponding data.\n\nFor example, if you'd like to get a list of all `Products`, you can submit this `select`:\n```\n{\n  \"name\": \"\"\n}\n```\n\nFiltration is also supported with the special key of `\"$where\":{}`. The `$where` object supports all comparison operators\nfrom Sequelize ORM https://sequelize.org/master/manual/model-querying-basics.html#operators. Please note that operations are prefixed, e.g. instead of `Op.eq` => `$eq`.\n\nFor example, if you'd like to get a list of all `Products` with status `in_stock` that were created by `Merchants` from Africa, you can submit this `select`:\n```\n{\n  \"name\": \"\",\n  \"status\": \"\",\n  \"$where\": {\n    \"status\": {\n      \"$eq\": \"in_stock\"\n    }\n  },\n  \"merchant\": {\n    \"merchant_name\": \"\",\n    \"country\": {\n      \"name\": \"\",\n      \"continent_name\": \"\",\n      \"$where\": {\n        \"continent_name\": {\n          \"$eq\": \"Africa\"\n        }\n      }\n    }\n  }\n}\n```\n\nSimilarly, you can use the `\"$order\":[]` object to set a specific order of your results. The `$order` object is an array of rules that will be applied starting from the first rule in the array down to the last one.\n\nFor example, if you'd like to get a list of all highest price `Products` sorted by their `Merchant` country name, you can submit this `select`:\n```\n{\n  \"name\": \"\",\n  \"price\": \"\",\n  \"merchant\": {\n    \"merchant_name\": \"\",\n    \"country\": {\n      \"name\": \"\"\n    }\n  },\n  \"$order\": [\n    [\"price\", \"desc\"],\n    [\"merchant.country.name\", \"asc\"]\n  ]\n}\n```\n",
+            "description": "The `select` query object is used to point what data the API need to return.\nAdding a property to the `select` object will return the corresponding data.\n\nFor example, if you'd like to get a list of all `Products`, you can submit this `select`:\n```\n{\n  \"name\": \"\"\n}\n```\n<br />\n\nWhenever you fee like you want only a slice of the response you can apply pagination via the `$offset` and `$limit` props.\nFor example, if you'd like to get page **3** of all `Products` with a maximum of **5** rows per page, you can submit this `select`:\n```\n{\n  \"name\": \"\",\n  \"$offset\": 10,\n  \"$limit\": 5\n}\n```\n<br />\n\nFiltration is also supported with the special key of `\"$where\":{}`. The `$where` object supports all comparison operators\nfrom Sequelize ORM https://sequelize.org/master/manual/model-querying-basics.html#operators. Please note that operations are prefixed, e.g. instead of `Op.eq` => `$eq`.\n\nFor example, if you'd like to get a list of all `Products` with status `in_stock` that were created by `Merchants` from Africa, you can submit this `select`:\n```\n{\n  \"name\": \"\",\n  \"status\": \"\",\n  \"$where\": {\n    \"status\": {\n      \"$eq\": \"in_stock\"\n    }\n  },\n  \"merchant\": {\n    \"merchant_name\": \"\",\n    \"country\": {\n      \"name\": \"\",\n      \"continent_name\": \"\",\n      \"$where\": {\n        \"continent_name\": {\n          \"$eq\": \"Africa\"\n        }\n      }\n    }\n  }\n}\n```\n<br />\n\nSimilarly, you can use the `\"$order\":[]` object to set a specific order of your results. The `$order` object is an array of rules that will be applied starting from the first rule in the array down to the last one.\n\nFor example, if you'd like to get a list of all highest price `Products` sorted by their `Merchant` country name, you can submit this `select`:\n```\n{\n  \"name\": \"\",\n  \"price\": \"\",\n  \"merchant\": {\n    \"merchant_name\": \"\",\n    \"country\": {\n      \"name\": \"\"\n    }\n  },\n  \"$order\": [\n    [\"price\", \"desc\"],\n    [\"merchant.country.name\", \"asc\"]\n  ]\n}\n```\n<br />\n",
             "default": {
               "name": ""
             }
@@ -211,11 +262,23 @@
         ],
         "responses": {
           "200": {
-            "description": "An array of `Products` that matched the request parameters.\n",
+            "description": "`count` and `rows` response of `Products` that matched the request parameters.\n",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/DatabaseProduct"
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "number",
+                  "format": "integer",
+                  "description": "Total number of records that match the `select` criteria.\n",
+                  "example": 12
+                },
+                "rows": {
+                  "description": "An array of `Products` that matched the request parameters.\n",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/DatabaseProduct"
+                  }
+                }
               }
             }
           },
@@ -370,9 +433,9 @@
         "tags": [
           "Accounts"
         ],
-        "summary": "Find all Users",
-        "description": "This API returns a list of all `Users` based on common `select` request.\n",
-        "operationId": "findAllUsers",
+        "summary": "Find and count all Users",
+        "description": "Returns a list of `Users` that matched the `select` criteria.\n",
+        "operationId": "findAndCountAllUsers",
         "produces": [
           "application/json"
         ],
@@ -381,7 +444,7 @@
             "name": "select",
             "in": "query",
             "type": "object",
-            "description": "The `select` query object is used to point what data the API need to return.\nAdding a property to the `select` object will return the corresponding data.\n\nFor example, if you'd like to get a list of all `Users` with their full name, you can submit this `select`:\n```\n{\n  \"full_name\": \"\"\n}\n```\n\nFiltration is also supported with the special key of `\"$where\":{}`. The `$where` object supports all comparison operators\nfrom Sequelize ORM https://sequelize.org/master/manual/model-querying-basics.html#operators. Please note that operations are prefixed, e.g. instead of `Op.eq` => `$eq`.\n\nFor example, if you'd like to get a list of all `Users` within the continent of `Africa`, you can submit this `select`:\n```\n{\n  \"full_name\": \"\",\n  \"country\": {\n    \"name\": \"\",\n    \"continent_name\": \"\",\n    \"$where\": {\n      \"continent_name\": {\n        \"$eq\": \"Africa\"\n      }\n    }\n  }\n}\n```\n\nSimilarly, you can use the `\"$order\":[]` object to set a specific order of your results. The `$order` object is an array of rules that will be applied starting from the first rule in the array down to the last one.\n\nFor example, if you'd like to get a list of `Users` which ordered the most products by country, you can submit this `select`:\n```\n{\n  \"full_name\": \"\",\n  \"country\": {\n    \"name\": \"\"\n  },\n  \"orders\": {\n    \"id\": \"\",\n    \"order_items\": {\n      \"quantity\": \"\"\n    }\n  },\n  \"$order\": [\n    [\"orders.order_items.quantity\", \"desc\"],\n    [\"country.name\", \"asc\"]\n  ]\n}\n```\n",
+            "description": "The `select` query object is used to point what data the API need to return.\nAdding a property to the `select` object will return the corresponding data.\n\nFor example, if you'd like to get a list of all `Users` with their full name, you can submit this `select`:\n```\n{\n  \"full_name\": \"\"\n}\n```\n<br />\n\nWhenever you fee like you want only a slice of the response you can apply pagination via the `$offset` and `$limit` props.\nFor example, if you'd like to get page **3** of all `Users` with a maximum of **5** rows per page, you can submit this `select`:\n```\n{\n  \"full_name\": \"\",\n  \"$offset\": 10,\n  \"$limit\": 5\n}\n```\n<br />\n\nFiltration is also supported with the special key of `\"$where\":{}`. The `$where` object supports all comparison operators\nfrom Sequelize ORM https://sequelize.org/master/manual/model-querying-basics.html#operators. Please note that operations are prefixed, e.g. instead of `Op.eq` => `$eq`.\n\nFor example, if you'd like to get a list of all `Users` within the continent of `Africa`, you can submit this `select`:\n```\n{\n  \"full_name\": \"\",\n  \"country\": {\n    \"name\": \"\",\n    \"continent_name\": \"\",\n    \"$where\": {\n      \"continent_name\": {\n        \"$eq\": \"Africa\"\n      }\n    }\n  }\n}\n```\n<br />\n\nSimilarly, you can use the `\"$order\":[]` object to set a specific order of your results. The `$order` object is an array of rules that will be applied starting from the first rule in the array down to the last one.\n\nFor example, if you'd like to get a list of `Users` which ordered the most products by country, you can submit this `select`:\n```\n{\n  \"full_name\": \"\",\n  \"country\": {\n    \"name\": \"\"\n  },\n  \"orders\": {\n    \"id\": \"\",\n    \"order_items\": {\n      \"quantity\": \"\"\n    }\n  },\n  \"$order\": [\n    [\"orders.order_items.quantity\", \"desc\"],\n    [\"country.name\", \"asc\"]\n  ]\n}\n```\n<br />\n",
             "default": {
               "full_name": ""
             }
@@ -389,11 +452,23 @@
         ],
         "responses": {
           "200": {
-            "description": "An array of `Users` that matched the request parameters.\n",
+            "description": "`count` and `rows` response of `Users` that matched the request parameters.\n",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/DatabaseUser"
+              "type": "object",
+              "properties": {
+                "count": {
+                  "type": "number",
+                  "format": "integer",
+                  "description": "Total number of records that match the `select` criteria.\n",
+                  "example": 12
+                },
+                "rows": {
+                  "description": "An array of `Users` that matched the request parameters.\n",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/DatabaseUser"
+                  }
+                }
               }
             }
           },
@@ -757,50 +832,6 @@
     }
   },
   "parameters": {
-    "PaginationLimit": {
-      "in": "query",
-      "name": "pageSize",
-      "type": "integer",
-      "minimum": 2,
-      "maximum": 100,
-      "default": 10,
-      "description": "The `number` of items to retrieve in a listing.\n"
-    },
-    "PaginationOffset": {
-      "in": "query",
-      "name": "pageNumber",
-      "type": "integer",
-      "minimum": 1,
-      "default": 1,
-      "description": "The `page` of items to retrieve in a listing.\n"
-    },
-    "SortingKey": {
-      "in": "query",
-      "name": "sortKey",
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "minItems": 1,
-      "uniqueItems": true,
-      "default": [
-        "created_at"
-      ],
-      "description": "An array of table fields to sort a listing by.\nPossible values limited to Model fields.\n"
-    },
-    "SortingDirection": {
-      "in": "query",
-      "name": "sortOrder",
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "minItems": 1,
-      "default": [
-        "asc"
-      ],
-      "description": "An array of table fields to sort a listing by.\nPossible values limited to `asc` and `desc`.\n"
-    },
     "PathUniqueIdentifier": {
       "in": "path",
       "name": "id",
@@ -824,118 +855,6 @@
       "format": "uuid",
       "required": true,
       "description": "The string literal `UUIDv4` of the Entity we want to retrieve.\n"
-    },
-    "withProductCategoriesAssociation": {
-      "in": "query",
-      "name": "withProductCategories",
-      "type": "boolean",
-      "default": true,
-      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach a `ProductCategories` association to the query.\n"
-    },
-    "withProductClassAssociation": {
-      "in": "query",
-      "name": "withProductClass",
-      "type": "boolean",
-      "default": false,
-      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach a `ProductClasses` association to the query.\n"
-    },
-    "withProductTypeAssociation": {
-      "in": "query",
-      "name": "withProductType",
-      "type": "boolean",
-      "default": false,
-      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the `ProductType` association to the query.\n"
-    },
-    "withContainerAssociation": {
-      "in": "query",
-      "name": "withContainer",
-      "type": "boolean",
-      "default": false,
-      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the `Container` association to the query.\n"
-    },
-    "withCurrentAddressAssociation": {
-      "in": "query",
-      "name": "withCurrentAddress",
-      "type": "boolean",
-      "default": false,
-      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the current `Address` association to the query.\n"
-    },
-    "withOriginAddressAssociation": {
-      "in": "query",
-      "name": "withOriginAddress",
-      "type": "boolean",
-      "default": false,
-      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the origin `Address` association to the query.\n"
-    },
-    "withUserAssociation": {
-      "in": "query",
-      "name": "withUser",
-      "type": "boolean",
-      "default": false,
-      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the owner `User` association to the query.\n"
-    },
-    "withSaleListingAssociation": {
-      "in": "query",
-      "name": "withSaleListing",
-      "type": "boolean",
-      "default": false,
-      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the owner `SaleListing` association to the query.\n"
-    },
-    "withSaleListingIngredientsAssociation": {
-      "in": "query",
-      "name": "withSaleListingIngredients",
-      "type": "boolean",
-      "default": false,
-      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the `Ingredients` association to the `SaleListing` object in query.\n"
-    },
-    "withSaleListingProductTypeAssociation": {
-      "in": "query",
-      "name": "withSaleListingProductType",
-      "type": "boolean",
-      "default": false,
-      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the `ProductType` association to the `SaleListing` object in query.\n"
-    },
-    "withSaleListingContainerAssociation": {
-      "in": "query",
-      "name": "withSaleListingContainer",
-      "type": "boolean",
-      "default": false,
-      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the `Container` association to the `SaleListing` object in query.\n"
-    },
-    "withSaleListingOriginAddressAssociation": {
-      "in": "query",
-      "name": "withSaleListingOriginAddress",
-      "type": "boolean",
-      "default": false,
-      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the origin `Address` association to the `SaleListing` object in query.\n"
-    },
-    "withSaleListingCurrentAddressAssociation": {
-      "in": "query",
-      "name": "withSaleListingCurrentAddress",
-      "type": "boolean",
-      "default": false,
-      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the current `Address` association to the `SaleListing` object in query.\n"
-    },
-    "withSampleAssociation": {
-      "in": "query",
-      "name": "withSample",
-      "type": "boolean",
-      "default": false,
-      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the `Sample` association to the `Bid` object.\n"
-    },
-    "withBidsAssociation": {
-      "in": "query",
-      "name": "withBids",
-      "type": "boolean",
-      "default": false,
-      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the existing `Bids` a `SaleListing` has.\n"
-    },
-    "withInvoicesAssociation": {
-      "in": "query",
-      "name": "withInvoices",
-      "type": "boolean",
-      "default": false,
-      "description": "Optional boolean flag that can be `true` or `false`.\nIndicates whether we should attach the existing `SaleListingInvoice` a `SaleListing` has.\n"
     }
   },
   "tags": []

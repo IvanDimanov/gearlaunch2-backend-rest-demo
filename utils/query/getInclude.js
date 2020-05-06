@@ -19,6 +19,14 @@ const getInclude = (select, getFindOptions, Op, getModelByName) => {
           model: getModelByName(modelName),
           as: modelName,
           required: true,
+
+          /**
+           * If the top `select` wants to use `$limit`
+           * then we need to `duplicating: false` as described here:
+           * https://github.com/sequelize/sequelize/issues/4446#issuecomment-138288921
+           */
+          duplicating: false,
+
           ...options,
         };
       });

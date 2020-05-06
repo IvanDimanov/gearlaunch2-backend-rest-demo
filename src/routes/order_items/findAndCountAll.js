@@ -16,10 +16,10 @@ const getFindOptions = require('../../../utils/query/getFindOptions');
  *   get:
  *     tags:
  *       - Products
- *     summary: Find all OrderItems
+ *     summary: Find and count all OrderItems
  *     description: |
- *       This API returns a list of all `OrderItems` based on common `select` request.
- *     operationId: findAllOrderItems
+ *       Returns a list of `OrderItems` that matched the `select` criteria.
+ *     operationId: findAndCountAllOrderItems
  *     produces:
  *       - application/json
  *     parameters:
@@ -36,6 +36,18 @@ const getFindOptions = require('../../../utils/query/getFindOptions');
  *             "quantity": ""
  *           }
  *           ```
+ *           <br />
+ *
+ *           Whenever you fee like you want only a slice of the response you can apply pagination via the `$offset` and `$limit` props.
+ *           For example, if you'd like to get page **3** of all `OrderItems` with a maximum of **5** rows per page, you can submit this `select`:
+ *           ```
+ *           {
+ *             "quantity": "",
+ *             "$offset": 10,
+ *             "$limit": 5
+ *           }
+ *           ```
+ *           <br />
  *
  *           Filtration is also supported with the special key of `"$where":{}`. The `$where` object supports all comparison operators
  *           from Sequelize ORM https://sequelize.org/master/manual/model-querying-basics.html#operators. Please note that operations are prefixed, e.g. instead of `Op.eq` => `$eq`.
@@ -69,6 +81,7 @@ const getFindOptions = require('../../../utils/query/getFindOptions');
  *             }
  *           }
  *           ```
+ *           <br />
  *
  *           Similarly, you can use the `"$order":[]` object to set a specific order of your results. The `$order` object is an array of rules that will be applied starting from the first rule in the array down to the last one.
  *
@@ -87,17 +100,30 @@ const getFindOptions = require('../../../utils/query/getFindOptions');
  *             ]
  *           }
  *           ```
+ *           <br />
  *
  *         default:
  *           quantity: ''
+ *
  *     responses:
  *       200:
  *         description: |
- *           An array of `OrderItems` that matched the request parameters.
+ *           `count` and `rows` response of `OrderItems` that matched the request parameters.
  *         schema:
- *           type: 'array'
- *           items:
- *             $ref: '#/definitions/DatabaseOrderItem'
+ *           type: object
+ *           properties:
+ *             count:
+ *               type: number
+ *               format: integer
+ *               description: |
+ *                 Total number of records that match the `select` criteria.
+ *               example: 12
+ *             rows:
+ *               description: |
+ *                 An array of `OrderItems` that matched the request parameters.
+ *               type: 'array'
+ *               items:
+ *                 $ref: '#/definitions/DatabaseOrderItem'
  *       500:
  *         $ref: '#/responses/AppNotFound'
  */
@@ -111,7 +137,7 @@ router.get('/api/products/v1/order_items',
       const {Sequelize: {Op}} = models;
 
       const findOptions = getFindOptions({select, Op, getModelByName});
-      const orderItems = await models.order_items.findAll(findOptions);
+      const orderItems = await models.order_items.findAndCountAll(findOptions);
 
       ctx.body = orderItems;
     }

@@ -27,6 +27,26 @@ describe('/query/getFindOptions', () => {
   });
 
 
+  it('should return "offset" and "limit" when the `select` object request them', () => {
+    expect(
+        getFindOptions({
+          select: {
+            id: '',
+            name: '',
+            '$offset': 14,
+            '$limit': 11,
+          },
+          Op: {},
+          getModelByName: () => '',
+        })
+    ).to.deep.equal({
+      attributes: ['id', 'name'],
+      offset: 14,
+      limit: 11,
+    });
+  });
+
+
   it('should return complex find options when called with complex "$where" object', () => {
     expect(
         getFindOptions({
@@ -54,6 +74,7 @@ describe('/query/getFindOptions', () => {
         as: 'test',
         attributes: ['code'],
         required: 1,
+        duplicating: false,
         where: {
           test: {
             '===': 11,
@@ -87,6 +108,7 @@ describe('/query/getFindOptions', () => {
         model: 'testModel',
         as: 'test',
         required: true,
+        duplicating: false,
         attributes: ['code'],
       }],
       order: [

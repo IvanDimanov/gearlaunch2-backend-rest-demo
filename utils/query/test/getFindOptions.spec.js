@@ -31,8 +31,8 @@ describe('/query/getFindOptions', () => {
     expect(
         getFindOptions({
           select: {
-            id: '',
-            name: '',
+            'id': '',
+            'name': '',
             '$offset': 14,
             '$limit': 11,
           },

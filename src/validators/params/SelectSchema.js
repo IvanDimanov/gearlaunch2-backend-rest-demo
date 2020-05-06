@@ -17,8 +17,8 @@ const SelectSchema = Joi.object()
         '$offset': Joi.number().integer().min(0),
         '$limit': Joi.number().integer().min(1),
       })
-      .unknown()
-      .default({}),
+          .unknown()
+          .default({}),
     });
 
 module.exports = SelectSchema;
